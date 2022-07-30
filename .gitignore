@@ -396,3 +396,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Directory to ignore
+Library/
+Logs/
+Temp/
+UserSettings/
+Build/
