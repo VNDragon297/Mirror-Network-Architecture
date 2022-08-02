@@ -6,8 +6,7 @@ using System;
 
 public class RoomPlayer : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(OnNameChanged))]
-    public string playerName;
+    [SyncVar(hook = nameof(OnNameChanged))] public string playerName;
 
     private void OnNameChanged(string oldName, string newName)
     {
@@ -27,7 +26,5 @@ public class RoomPlayer : NetworkBehaviour
         // Input authority check
         if (!isLocalPlayer)
             return;
-
-
     }
 }

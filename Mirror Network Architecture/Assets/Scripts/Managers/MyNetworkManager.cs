@@ -9,6 +9,7 @@ public class MyNetworkManager : NetworkManager
     public static MyNetworkManager instance;
 
     [SerializeField] private Transport networkTransport;
+    [SerializeField] private List<RoomPlayer> playerList;
 
     public override void Awake()
     {
@@ -59,6 +60,7 @@ public class MyNetworkManager : NetworkManager
     public override void OnClientDisconnect()
     {
         base.OnClientDisconnect();
+        Debug.LogWarning("Player disconnected");
     }
 
     private void OnClientConnected(NetworkConnectionToClient conn, InitializeMessage msg)
@@ -72,6 +74,10 @@ public class MyNetworkManager : NetworkManager
             roomPlayer.playerName = msg.name;
             NetworkServer.Spawn(obj, conn);
             NetworkServer.AddPlayerForConnection(conn, obj);
+
+            if (ServerInfo.sessionMode == SessionMode.SERVER || ServerInfo.sessionMode == SessionMode.HOST)
+                playerList.Add(roomPlayer);
+
         }
         else
         {
@@ -79,5 +85,27 @@ public class MyNetworkManager : NetworkManager
             Debug.LogError("Please add script back to prefab and rebuild");
             Destroy(obj);
         }
+    }
+
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerConnect(conn);
+        Debug.Log($"Player disconnected");
+    }
+
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        // Remove client authority for all objects that are owned by client but not the base playerObj
+        foreach (var obj in conn.clientOwnedObjects)
+        {
+            if (obj.TryGetComponent<RoomPlayer>(out RoomPlayer baseObj))
+            {
+                playerList.Remove(baseObj);
+                Debug.Log($"Player {baseObj.playerName} disconnected");
+            }
+            else
+                obj.RemoveClientAuthority();
+        }
+        NetworkServer.DestroyPlayerForConnection(conn);
     }
 }

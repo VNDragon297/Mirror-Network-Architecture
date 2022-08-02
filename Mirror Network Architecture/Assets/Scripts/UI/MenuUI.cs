@@ -13,7 +13,7 @@ public class MenuUI : MonoBehaviour
     private void OnEnable()
     {
         string displayName = PlayerPrefs.GetString("DisplayNameKey");
-
+        DisplayNameInput.text = displayName;
         DisplayNameInput.ActivateInputField();
 
         StartHostButton.onClick.AddListener(delegate {
@@ -43,6 +43,7 @@ public class MenuUI : MonoBehaviour
                 if (string.IsNullOrEmpty(DisplayNameInput.text))
                     return;
 
+                PlayerPrefs.SetString("DisplayNameKey", DisplayNameInput.text);
                 ClientInfo.DisplayName = DisplayNameInput.text;
 
                 MyNetworkManager.instance.StartHost();
@@ -51,6 +52,7 @@ public class MenuUI : MonoBehaviour
                 if (string.IsNullOrEmpty(DisplayNameInput.text))
                     return;
 
+                PlayerPrefs.SetString("DisplayNameKey", DisplayNameInput.text);
                 ClientInfo.DisplayName = DisplayNameInput.text;
 
                 MyNetworkManager.instance.StartClient();

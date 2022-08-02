@@ -1297,7 +1297,6 @@ GameObject:
   - component: {fileID: 1381135967}
   - component: {fileID: 1381135966}
   - component: {fileID: 1381135965}
-  - component: {fileID: 1381135964}
   m_Layer: 0
   m_Name: Network Manager
   m_TagString: Untagged
@@ -1305,20 +1304,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1381135964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1381135963}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offsetX: 0
-  offsetY: 0
 --- !u!114 &1381135965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1363,7 +1348,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   runInBackground: 1
   autoStartServerBuild: 1
-  serverTickRate: 30
+  serverTickRate: 60
   offlineScene: Assets/Scenes/OfflineScene.unity
   onlineScene: Assets/Scenes/OnlineScene.unity
   transport: {fileID: 1381135965}
@@ -1376,6 +1361,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   networkTransport: {fileID: 0}
+  playerList: []
 --- !u!4 &1381135967
 Transform:
   m_ObjectHideFlags: 0
