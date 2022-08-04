@@ -9,7 +9,6 @@ public class MyNetworkManager : NetworkManager
     public static MyNetworkManager instance;
 
     [SerializeField] private Transport networkTransport;
-    [SerializeField] private List<RoomPlayer> playerList;
 
     public override void Awake()
     {
@@ -24,13 +23,17 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnStartHost()
     {
-        Debug.Log("Started ast Host");
+        // Debug.Log("Started ast Host");
+        maxConnections = ServerInfo.lobbyMax <= 0 || ServerInfo.lobbyMax > ServerInfo.lobbyCap ? ServerInfo.lobbyCap : ServerInfo.lobbyMax;
+
         base.OnStartHost();
     }
 
     public override void OnStartServer()
     {
-        Debug.Log("Started ast Server");
+        // Debug.Log("Started ast Server");
+        maxConnections = ServerInfo.lobbyMax <= 0 || ServerInfo.lobbyMax > ServerInfo.lobbyCap ? ServerInfo.lobbyCap : ServerInfo.lobbyMax;
+
         base.OnStartServer();
 
         NetworkServer.RegisterHandler<InitializeMessage>(OnClientConnected);
@@ -38,7 +41,7 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnStartClient()
     {
-        Debug.Log("Started ast Client");
+        // Debug.Log("Started ast Client");
         base.OnStartClient();
     }
 
@@ -71,13 +74,9 @@ public class MyNetworkManager : NetworkManager
 
         if(obj.TryGetComponent<RoomPlayer>(out RoomPlayer roomPlayer))
         {
-            roomPlayer.playerName = msg.name;
+            roomPlayer.displayName = msg.name;
             NetworkServer.Spawn(obj, conn);
             NetworkServer.AddPlayerForConnection(conn, obj);
-
-            if (ServerInfo.sessionMode == SessionMode.SERVER || ServerInfo.sessionMode == SessionMode.HOST)
-                playerList.Add(roomPlayer);
-
         }
         else
         {
@@ -90,7 +89,7 @@ public class MyNetworkManager : NetworkManager
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
         base.OnServerConnect(conn);
-        Debug.Log($"Player disconnected");
+        Debug.Log($"Player connected (Server Side)");
     }
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
@@ -100,8 +99,7 @@ public class MyNetworkManager : NetworkManager
         {
             if (obj.TryGetComponent<RoomPlayer>(out RoomPlayer baseObj))
             {
-                playerList.Remove(baseObj);
-                Debug.Log($"Player {baseObj.playerName} disconnected");
+                Debug.Log($"Player {baseObj.displayName} disconnected");
             }
             else
                 obj.RemoveClientAuthority();

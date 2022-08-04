@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\Managers\EventManager.cs" />
     <Compile Include="Assets\Scripts\Networks\ServerInfo.cs" />
     <Compile Include="Assets\Scripts\Managers\MySceneManager.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyUI.cs" />
     <Compile Include="Assets\Scripts\Networks\ClientInfo.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Assets\Scripts\Networks\Messages\InitializeMessage.cs" />
     <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
     <Compile Include="Assets\Scripts\UI\MenuUI.cs" />
-    <Compile Include="Assets\Scripts\UI\LobbyUI.cs" />
+    <Compile Include="Assets\Scripts\Managers\PlayerManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

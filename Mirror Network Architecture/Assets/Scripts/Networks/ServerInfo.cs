@@ -5,7 +5,8 @@ using UnityEngine;
 public static class ServerInfo
 {
     public static string serverName;
-    public static int maxPlayers;
+    public static int lobbyCap = 10;
+    public static int lobbyMax;
     public static SessionMode sessionMode;
 }
 

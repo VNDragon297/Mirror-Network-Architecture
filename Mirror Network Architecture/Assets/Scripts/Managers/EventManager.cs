@@ -17,10 +17,10 @@ public class EventManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    public Action<string> onRoomPlayerSpawned;
-    public void RoomPlayerSpawned(string name)
+    public Action onPlayerListChanged;
+    public void PlayerListChanged()
     {
-        if (onRoomPlayerSpawned != null)
-            onRoomPlayerSpawned(name);
+        if (onPlayerListChanged != null)
+            onPlayerListChanged();
     }
 }
