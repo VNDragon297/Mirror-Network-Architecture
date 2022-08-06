@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 using System;
 
-public class RoomPlayer : NetworkBehaviour
+public class RoomPlayer : NetworkRoomPlayer
 {
     public static RoomPlayer Local;
 
@@ -20,32 +20,11 @@ public class RoomPlayer : NetworkBehaviour
         // Events when player gain control of this object;
     }
 
-    private void Awake()
-    {
-    }
-
-    private void Start()
-    {
-        if (isLocalPlayer)
-            Local = this;
-
-        Debug.Log($"Spawned in {displayName}");
-
-        PlayerManager.playerList.Add(this);
-        EventManager.instance.PlayerListChanged();
-    }
-
     private void Update()
     {
         // Input authority check
         if (!isLocalPlayer)
             return;
 
-    }
-
-    private void OnDestroy()
-    {
-        PlayerManager.playerList.Remove(this);
-        EventManager.instance.PlayerListChanged();
     }
 }

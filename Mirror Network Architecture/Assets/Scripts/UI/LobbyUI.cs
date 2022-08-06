@@ -10,6 +10,8 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button ExitButton;
     [SerializeField] private List<PlayerSlotUI> playerSlots;
 
+    private int playerListCount = 0;
+
     private void Awake()
     {
         ExitButton.onClick.AddListener(delegate
@@ -19,16 +21,35 @@ public class LobbyUI : MonoBehaviour
             else if(ServerInfo.sessionMode == SessionMode.CLIENT)
                 MyNetworkManager.instance.StopClient();
         });
+        StartGameButton.onClick.AddListener(delegate
+        {
+            MyNetworkManager.instance.NetworkChangeScene("GameplayScene");
+        });
 
         EventManager.instance.onPlayerListChanged += UpdateLobbyUI;
 
-        Debug.Log("Awaken");
+    }
+
+    private void Update()
+    {
+        // Update only if the count changes
+        if(playerListCount != MyNetworkManager.instance.roomSlots.Count)
+        {
+            UpdateLobbyUI();
+        }
+
     }
 
     private void UpdateLobbyUI()
     {
-        Debug.Log("Updating lobbyUI");
-        List<RoomPlayer> playerListCopy = PlayerManager.playerList;
+        List<RoomPlayer> playerListCopy = new List<RoomPlayer>();
+        foreach (var player in MyNetworkManager.instance.roomSlots)
+        {
+            if (player.TryGetComponent<RoomPlayer>(out RoomPlayer roomPlayer))
+            {
+                playerListCopy.Add(roomPlayer);
+            }
+        }
 
         if (RoomPlayer.Local != null)
         {
@@ -40,6 +61,7 @@ public class LobbyUI : MonoBehaviour
 
             Debug.Log($"Checking if local player is Host: {StartGameButton.interactable}");
         }
+
         // Toggle playerslot open or closed based on room max size
         for (int i = 0; i < 4; i++)
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 using System;
 
-public class MyNetworkManager : NetworkManager
+public class MyNetworkManager : NetworkRoomManager
 {
     public static MyNetworkManager instance;
 
@@ -105,5 +105,10 @@ public class MyNetworkManager : NetworkManager
                 obj.RemoveClientAuthority();
         }
         NetworkServer.DestroyPlayerForConnection(conn);
+    }
+
+    public void NetworkChangeScene(string sceneName)
+    {
+        MyNetworkManager.instance.ServerChangeScene(sceneName);
     }
 }

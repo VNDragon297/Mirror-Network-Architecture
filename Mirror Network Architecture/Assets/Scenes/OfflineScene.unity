@@ -1360,8 +1360,16 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs: []
-  networkTransport: {fileID: 0}
-  playerList: []
+  showRoomGUI: 0
+  minPlayers: 1
+  roomPlayerPrefab: {fileID: -2826287373526204500, guid: 3f8e0daa86d8ffd4b8a37ab7f59139f6,
+    type: 3}
+  RoomScene: Assets/Scenes/OnlineScene.unity
+  GameplayScene: Assets/Scenes/GameplayScene.unity
+  _allPlayersReady: 0
+  roomSlots: []
+  clientIndex: 0
+  networkTransport: {fileID: 1381135965}
 --- !u!4 &1381135967
 Transform:
   m_ObjectHideFlags: 0
