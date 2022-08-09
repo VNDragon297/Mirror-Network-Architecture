@@ -66,7 +66,12 @@
     <Compile Include="Assets\Scripts\Player\RoomPlayer.cs" />
     <Compile Include="Assets\Scripts\Networks\Messages\InitializeMessage.cs" />
     <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
     <Compile Include="Assets\Scripts\UI\MenuUI.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerComponent.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerEntity.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Managers\LevelManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />
@@ -870,10 +875,6 @@
     <ProjectReference Include="kcp2k.csproj">
       <Project>{C12205B3-9D44-5618-2B66-AB12695B5FB2}</Project>
       <Name>kcp2k</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Examples.csproj">
-      <Project>{4AE18467-9931-D3F9-6713-B94283C3A8D9}</Project>
-      <Name>Mirror.Examples</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.Editor.csproj">
       <Project>{ED4A156D-6A2C-1FE8-7CB2-8C55EF2C27EA}</Project>

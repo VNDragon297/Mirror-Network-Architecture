@@ -23,7 +23,7 @@ public class LobbyUI : MonoBehaviour
         });
         StartGameButton.onClick.AddListener(delegate
         {
-            MyNetworkManager.instance.NetworkChangeScene("GameplayScene");
+            MyNetworkManager.instance.LoadScene("GameplayScene");
         });
 
         EventManager.instance.onPlayerListChanged += UpdateLobbyUI;

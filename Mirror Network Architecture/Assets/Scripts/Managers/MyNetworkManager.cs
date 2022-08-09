@@ -107,8 +107,37 @@ public class MyNetworkManager : NetworkRoomManager
         NetworkServer.DestroyPlayerForConnection(conn);
     }
 
-    public void NetworkChangeScene(string sceneName)
+    public void LoadScene(string sceneName)
     {
         MyNetworkManager.instance.ServerChangeScene(sceneName);
+    }
+
+    [SerializeField] private List<NetworkStartPosition> startPositions;
+    public override void OnServerSceneChanged(string sceneName)
+    {
+        base.OnServerSceneChanged(sceneName);
+
+        // Clear spawn points upon new scene load
+        startPositions.Clear();
+        var coords = FindObjectsOfType<NetworkStartPosition>();
+        foreach (var coord in coords)
+            startPositions.Add(coord);
+
+        // Spawn players
+        if(string.Equals(sceneName, "GameplayScene"))
+        {
+            foreach(var player in roomSlots)
+            {
+                Debug.Log("Spawning players");
+
+                // Determine spawn point
+                Vector3 spawnPoint = (startPositions.Count > 0) ? startPositions[0].transform.position : new Vector3(0f, 1.5f, 0f);
+
+                // If Spectators are allow, check here to know what to spawn
+                var obj = Instantiate(spawnPrefabs[0], spawnPoint, Quaternion.identity);
+
+                NetworkServer.Spawn(obj, player.gameObject);
+            }
+        }
     }
 }
