@@ -14,7 +14,6 @@ public class RoomPlayer : NetworkRoomPlayer
 
     public override void OnStartAuthority()
     {
-        Debug.Log($"Gained authority of {displayName}");
         base.OnStartAuthority();
 
         // Events when player gain control of this object;

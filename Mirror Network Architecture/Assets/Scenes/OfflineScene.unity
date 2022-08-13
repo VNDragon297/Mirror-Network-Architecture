@@ -1360,6 +1360,7 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 1563912238846945895, guid: ce34975baba31154384dde6d73af50b6, type: 3}
   - {fileID: 975056446468068945, guid: f232aee9019d87342a2bbbf9a4a72277, type: 3}
   showRoomGUI: 0
   minPlayers: 1
@@ -1370,7 +1371,7 @@ MonoBehaviour:
   _allPlayersReady: 0
   roomSlots: []
   clientIndex: 0
-  networkTransport: {fileID: 1381135965}
+  startPositions: []
 --- !u!4 &1381135967
 Transform:
   m_ObjectHideFlags: 0

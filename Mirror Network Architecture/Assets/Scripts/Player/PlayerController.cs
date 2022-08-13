@@ -47,6 +47,9 @@ public class PlayerController : PlayerComponent
 
     private void FixedUpdate()
     {
+        if (!hasAuthority)
+            return;
+
         Inputs = playerInput.Inputs;
         isGrounded = charController.isGrounded;
 
@@ -67,15 +70,21 @@ public class PlayerController : PlayerComponent
     {
         moveDirection = MoveAxisRemap(Inputs.moveDirection);
         Vector3 move = transform.right * moveDirection.x + transform.forward * moveDirection.z;
-        charController.Move(move * walkSpeed * Time.fixedDeltaTime);
+        CmdPlayerMove(move);
 
         if (isGrounded)
             isWalking = (moveDirection.z >= .125f);
     }
 
+    [Command]
+    private void CmdPlayerMove(Vector3 move)
+    {
+        charController.Move(move * walkSpeed * Time.fixedDeltaTime);
+    }
+
     [Header("Camera Position")]
     public Transform headTransform;
-    float xRotation = 0f;
+    [SyncVar] float xRotation = 0f;
     private void Look()
     {
         // Using runner.Deltatime might be bad unless you have client prediction
@@ -85,8 +94,13 @@ public class PlayerController : PlayerComponent
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        // Currently broken on clients
+        CmdPlayerLook(mouseX, xRotation);
+    }
+
+    [Command]
+    private void CmdPlayerLook(float mouseX, float xRot)
+    {
         transform.Rotate(mouseX * Vector3.up);
-        headTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        headTransform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
     }
 }

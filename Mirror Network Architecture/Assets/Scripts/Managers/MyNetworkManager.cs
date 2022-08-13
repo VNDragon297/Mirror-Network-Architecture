@@ -8,8 +8,6 @@ public class MyNetworkManager : NetworkRoomManager
 {
     public static MyNetworkManager instance;
 
-    [SerializeField] private Transport networkTransport;
-
     public override void Awake()
     {
         base.Awake();
@@ -70,19 +68,24 @@ public class MyNetworkManager : NetworkRoomManager
     {
         Debug.Log($"{msg.name} connected");
 
-        var obj = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        var gameManagerObj = Instantiate(spawnPrefabs[0], Vector3.zero, Quaternion.identity);
+        var roomPlayerObj = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
 
-        if(obj.TryGetComponent<RoomPlayer>(out RoomPlayer roomPlayer))
+        if(roomPlayerObj.TryGetComponent<RoomPlayer>(out RoomPlayer roomPlayer))
         {
+            NetworkServer.Spawn(gameManagerObj, conn);
+            NetworkServer.AddPlayerForConnection(conn, gameManagerObj);
+
             roomPlayer.displayName = msg.name;
-            NetworkServer.Spawn(obj, conn);
-            NetworkServer.AddPlayerForConnection(conn, obj);
+
+            Debug.Log("Spawning Game Manager");
+            NetworkServer.Spawn(roomPlayerObj, conn);
         }
         else
         {
             Debug.LogError("RoomPlayer script is missing from prefab");
             Debug.LogError("Please add script back to prefab and rebuild");
-            Destroy(obj);
+            Destroy(roomPlayerObj);
         }
     }
 
@@ -97,9 +100,15 @@ public class MyNetworkManager : NetworkRoomManager
         // Remove client authority for all objects that are owned by client but not the base playerObj
         foreach (var obj in conn.clientOwnedObjects)
         {
-            if (obj.TryGetComponent<RoomPlayer>(out RoomPlayer baseObj))
+            // Remove RoomPlayer and GameManager of the disconnected client
+            if (obj.TryGetComponent<RoomPlayer>(out RoomPlayer clientRoomPlayer))
             {
-                Debug.Log($"Player {baseObj.displayName} disconnected");
+                Debug.Log($"Player {clientRoomPlayer.displayName} disconnected");
+                continue;
+            }
+            else if(obj.TryGetComponent<GameManager>(out GameManager clientGameManager))
+            {
+                continue;
             }
             else
                 obj.RemoveClientAuthority();
@@ -134,7 +143,7 @@ public class MyNetworkManager : NetworkRoomManager
                 Vector3 spawnPoint = (startPositions.Count > 0) ? startPositions[0].transform.position : new Vector3(0f, 1.5f, 0f);
 
                 // If Spectators are allow, check here to know what to spawn
-                var obj = Instantiate(spawnPrefabs[0], spawnPoint, Quaternion.identity);
+                var obj = Instantiate(spawnPrefabs[1], spawnPoint, Quaternion.identity);
 
                 NetworkServer.Spawn(obj, player.gameObject);
             }

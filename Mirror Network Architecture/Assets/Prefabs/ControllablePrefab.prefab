@@ -13,8 +13,10 @@ GameObject:
   - component: {fileID: 3679135312948281400}
   - component: {fileID: -3771658728521106075}
   - component: {fileID: 8837137976137998908}
+  - component: {fileID: 6483988149780499253}
   - component: {fileID: -4870260021575888530}
   - component: {fileID: 1434374737841698629}
+  - component: {fileID: 2839313631607264372}
   - component: {fileID: 6519426100880568726}
   m_Layer: 0
   m_Name: ControllablePrefab
@@ -72,7 +74,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  walkSpeed: 1
+  walkSpeed: 5
   mouseSens: 1
   headTransform: {fileID: 3255163992990343401}
 --- !u!114 &-3771658728521106075
@@ -220,6 +222,24 @@ MonoBehaviour:
       m_Action: Jump
       m_Flags: 0
     m_Flags: 0
+--- !u!114 &6483988149780499253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975056446468068945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d9c4e7217daad84593fe8706ae28b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  anchorPoints:
+  - {fileID: 3255163992990343401}
+  currentPos: {fileID: 0}
+  mouseSens: 1
 --- !u!114 &-4870260021575888530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,6 +291,41 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+--- !u!114 &2839313631607264372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975056446468068945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  sendInterval: 0.05
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 0
+  bufferTimeMultiplier: 1
+  bufferSizeLimit: 64
+  catchupThreshold: 4
+  catchupMultiplier: 0.1
+  onlySyncOnChange: 1
+  bufferResetMultiplier: 5
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  target: {fileID: 3255163992990343401}
 --- !u!114 &6519426100880568726
 MonoBehaviour:
   m_ObjectHideFlags: 0

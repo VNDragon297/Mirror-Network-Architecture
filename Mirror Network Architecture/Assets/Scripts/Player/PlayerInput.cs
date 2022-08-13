@@ -53,6 +53,7 @@ public class PlayerInput : PlayerComponent
     private void Update()
     {
         Inputs.moveDirection = Move.ReadValue<Vector2>();
+        Inputs.lookDelta = Look.ReadValue<Vector2>();
     }
 
     public void EnableInputAction()
