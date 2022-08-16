@@ -7,31 +7,43 @@ using System;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : PlayerComponent
 {
+    [Header("Ground Check")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundDistance;
+    [SerializeField] private LayerMask layerMask;
+
     private CharacterController charController;
     private PlayerInput playerInput;
 
-    public float walkSpeed = 1.0f;
+    public float walkSpeedMultiplier = 1.0f;
     public float mouseSens = 1.0f;
+    private const float gravity = -9.81f;
 
     [SyncVar] private PlayerInput.NetworkInputData Inputs;
-    [SyncVar] private Vector3 moveDirection;
+    [SyncVar] [SerializeField] private Vector3 moveDirection;
     [SyncVar] private Vector2 lookDelta;
     [SyncVar] private bool fired;
-    [SyncVar(hook = nameof(OnVelocityChangedCallback))]
-    private bool isWalking;
-    [SyncVar(hook = nameof(OnPlayerAirborneCallback))]
-    private bool isGrounded;
-    public event Action<bool, string> OnBooleanChanged;
+    [SyncVar(hook = nameof(OnWalkingCallback))] [SerializeField] private float velocity;
+    [SyncVar(hook = nameof(OnAirbornCallback))] [SerializeField] private bool isGrounded;
+    public Action<bool, string> onBooleanChanged;
+    public Action<float, string> onFloatChanged;
 
-    private void OnVelocityChangedCallback(bool oldVal, bool newVal) => isWalking = newVal;
+    private void OnWalkingCallback(float oldVal, float newVal)
+    {
+        velocity = newVal;
+        onFloatChanged?.Invoke(newVal, "velocityForward");
+    }
 
-    private void OnPlayerAirborneCallback(bool oldVal, bool newVal) => isGrounded = newVal;
+    private void OnAirbornCallback(bool oldVal, bool newVal)
+    {
+        isGrounded = newVal;
+        onBooleanChanged?.Invoke(newVal, "isGrounded");
+    }
 
     private void Awake()
     {
         charController = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
-
     }
 
     private void Update()
@@ -49,9 +61,7 @@ public class PlayerController : PlayerComponent
     {
         if (!hasAuthority)
             return;
-
         Inputs = playerInput.Inputs;
-        isGrounded = charController.isGrounded;
 
         Look();
         Move();
@@ -69,17 +79,33 @@ public class PlayerController : PlayerComponent
     private void Move()
     {
         moveDirection = MoveAxisRemap(Inputs.moveDirection);
-        Vector3 move = transform.right * moveDirection.x + transform.forward * moveDirection.z;
-        CmdPlayerMove(move);
+        if (isGrounded && moveDirection.y <= 0f)
+            moveDirection.y = -2f;
 
-        if (isGrounded)
-            isWalking = (moveDirection.z >= .125f);
+        if (Inputs.isRunPressed && moveDirection.z > 0f)
+            moveDirection.z *= 2f;
+
+        CmdPlayerMove(moveDirection);
     }
 
     [Command]
     private void CmdPlayerMove(Vector3 move)
     {
-        charController.Move(move * walkSpeed * Time.fixedDeltaTime);
+        // Setting moveDirection in server side
+        moveDirection = move;
+        // Checking for local direction before rotating the Vector
+        CheckState();
+
+        moveDirection = transform.right * moveDirection.x + transform.forward * moveDirection.z;
+        charController.Move(moveDirection * walkSpeedMultiplier * Time.fixedDeltaTime);
+    }
+
+    private void CheckState()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, layerMask);
+
+        if (isGrounded)
+            velocity = moveDirection.z;
     }
 
     [Header("Camera Position")]
@@ -102,5 +128,10 @@ public class PlayerController : PlayerComponent
     {
         transform.Rotate(mouseX * Vector3.up);
         headTransform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
 }

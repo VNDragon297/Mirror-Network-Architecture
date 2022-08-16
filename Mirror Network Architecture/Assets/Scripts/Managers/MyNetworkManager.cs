@@ -149,4 +149,23 @@ public class MyNetworkManager : NetworkRoomManager
             }
         }
     }
+
+    private void OnDestroy()
+    {
+        if (MyNetworkManager.instance.isNetworkActive)
+        {
+            switch(ServerInfo.sessionMode)
+            {
+                case SessionMode.SERVER:
+                    MyNetworkManager.instance.StopServer();
+                    break;
+                case SessionMode.HOST:
+                    MyNetworkManager.instance.StopHost();
+                    break;
+                case SessionMode.CLIENT:
+                    MyNetworkManager.instance.StopClient();
+                    break;
+            }
+        }
+    }
 }

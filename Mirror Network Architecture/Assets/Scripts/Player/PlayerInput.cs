@@ -16,6 +16,7 @@ public class PlayerInput : PlayerComponent
         public bool isDown(uint button) => (Buttons & button) == button;
 
         public bool isFirePressed;
+        public bool isRunPressed;
         public bool isJumpPressed;
     }
 
@@ -26,8 +27,10 @@ public class PlayerInput : PlayerComponent
     [SerializeField] private InputAction Look;
     [SerializeField] private InputAction Fire;
     [SerializeField] private InputAction Jump;
+    [SerializeField] private InputAction Run;
 
     private bool firePressed;
+    private bool runPressed;
     private bool jumpPressed;
 
     public override void OnStartAuthority()
@@ -39,21 +42,29 @@ public class PlayerInput : PlayerComponent
         Look.Clone();
         Fire.Clone();
         Jump.Clone();
+        Run.Clone();
 
         EnableInputAction();
 
         Fire.performed += FirePressed;
+        Run.performed += RunAction;
+        Run.canceled += RunAction;
         Jump.performed += JumpAction;
         Jump.canceled += JumpAction;
     }
 
     private void FirePressed(InputAction.CallbackContext ctx) => firePressed = true;
+    private void RunAction(InputAction.CallbackContext ctx) => runPressed = (ctx.performed) ? true : false;
     private void JumpAction(InputAction.CallbackContext ctx) => jumpPressed = (ctx.performed) ? true : false;
 
     private void Update()
     {
         Inputs.moveDirection = Move.ReadValue<Vector2>();
         Inputs.lookDelta = Look.ReadValue<Vector2>();
+
+        Inputs.isFirePressed = firePressed;
+        Inputs.isRunPressed = runPressed;
+        Inputs.isJumpPressed = jumpPressed;
     }
 
     public void EnableInputAction()
@@ -62,6 +73,7 @@ public class PlayerInput : PlayerComponent
         Look.Enable();
         Fire.Enable();
         Jump.Enable();
+        Run.Enable();
     }
 
     public void DisableInputAction()

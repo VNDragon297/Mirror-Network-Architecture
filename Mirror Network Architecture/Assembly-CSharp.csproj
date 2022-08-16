@@ -62,18 +62,19 @@
     <Compile Include="Assets\Scripts\UI\LobbyUI.cs" />
     <Compile Include="Assets\Scripts\Managers\LevelManager.cs" />
     <Compile Include="Assets\Scripts\Networks\ClientInfo.cs" />
+    <Compile Include="Assets\Scripts\Levels\Level.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerCameraController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Player\RoomPlayer.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerAnimController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEntity.cs" />
     <Compile Include="Assets\Scripts\Networks\Messages\InitializeMessage.cs" />
     <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerComponent.cs" />
     <Compile Include="Assets\Scripts\UI\MenuUI.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerCameraController.cs" />
-    <Compile Include="Assets\Scripts\Levels\Level.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />
