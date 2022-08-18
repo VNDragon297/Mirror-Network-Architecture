@@ -23,11 +23,7 @@ public class PlayerAnimController : PlayerComponent
 
     private void SetAnimatorState(bool val, string name) => animator.SetBool(name, val);
 
-    private void SetAnimatorState(float val, string name)
-    {
-        Debug.Log($"setting {name} with value {val}");
-        animator.SetFloat(name, val);
-    }
+    private void SetAnimatorState(float val, string name) => animator.SetFloat(name, val);
 
     private void OnDestroy()
     {

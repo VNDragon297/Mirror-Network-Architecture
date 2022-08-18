@@ -17,21 +17,22 @@ public class PlayerController : PlayerComponent
 
     public float walkSpeedMultiplier = 1.0f;
     public float mouseSens = 1.0f;
-    private const float gravity = -9.81f;
+    public float gravity = -9.81f;
 
     [SyncVar] private PlayerInput.NetworkInputData Inputs;
     [SyncVar] [SerializeField] private Vector3 moveDirection;
     [SyncVar] private Vector2 lookDelta;
     [SyncVar] private bool fired;
-    [SyncVar(hook = nameof(OnWalkingCallback))] [SerializeField] private float velocity;
+    [SyncVar(hook = nameof(OnWalkingCallback))] [SerializeField] private Vector2 velocity;
     [SyncVar(hook = nameof(OnAirbornCallback))] [SerializeField] private bool isGrounded;
     public Action<bool, string> onBooleanChanged;
     public Action<float, string> onFloatChanged;
 
-    private void OnWalkingCallback(float oldVal, float newVal)
+    private void OnWalkingCallback(Vector2 oldVal, Vector2 newVal)
     {
         velocity = newVal;
-        onFloatChanged?.Invoke(newVal, "velocityForward");
+        onFloatChanged?.Invoke(newVal.x, "velocityX");
+        onFloatChanged?.Invoke(newVal.y, "velocityY");
     }
 
     private void OnAirbornCallback(bool oldVal, bool newVal)
@@ -78,9 +79,8 @@ public class PlayerController : PlayerComponent
 
     private void Move()
     {
-        moveDirection = MoveAxisRemap(Inputs.moveDirection);
-        if (isGrounded && moveDirection.y <= 0f)
-            moveDirection.y = -2f;
+        var inputRemap = MoveAxisRemap(Inputs.moveDirection);
+        moveDirection = new Vector3(inputRemap.x, moveDirection.y, inputRemap.z);
 
         if (Inputs.isRunPressed && moveDirection.z > 0f)
             moveDirection.z *= 2f;
@@ -97,15 +97,19 @@ public class PlayerController : PlayerComponent
         CheckState();
 
         moveDirection = transform.right * moveDirection.x + transform.forward * moveDirection.z;
+
+        if (isGrounded && moveDirection.y <= 0f)
+            moveDirection.y = -2f;
+        moveDirection.y += gravity;
         charController.Move(moveDirection * walkSpeedMultiplier * Time.fixedDeltaTime);
     }
 
     private void CheckState()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, layerMask);
+        isGrounded = charController.isGrounded;
 
         if (isGrounded)
-            velocity = moveDirection.z;
+            velocity = new Vector2(moveDirection.x, moveDirection.z);
     }
 
     [Header("Camera Position")]
@@ -128,10 +132,5 @@ public class PlayerController : PlayerComponent
     {
         transform.Rotate(mouseX * Vector3.up);
         headTransform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
 }

@@ -36,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 975056446468068945}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3255163992990343401}
@@ -82,10 +82,11 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 8
-  walkSpeedMultiplier: 2
+  walkSpeedMultiplier: 1.35
   mouseSens: 4
+  gravity: -9.81
   moveDirection: {x: 0, y: 0, z: 0}
-  velocity: 0
+  velocity: {x: 0, y: 0}
   isGrounded: 0
   headTransform: {fileID: 3255163992990343401}
 --- !u!114 &-3771658728521106075
