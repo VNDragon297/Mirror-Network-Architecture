@@ -133,7 +133,7 @@ public class MyNetworkManager : NetworkRoomManager
             startPositions.Add(coord);
 
         // Spawn players
-        if(string.Equals(sceneName, "GameplayScene"))
+        if(string.Equals(sceneName, "Ascent"))
         {
             foreach(var player in roomSlots)
             {

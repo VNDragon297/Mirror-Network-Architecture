@@ -83,6 +83,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   walkSpeedMultiplier: 1.35
+  jumpHeight: 100
   mouseSens: 4
   gravity: -9.81
   moveDirection: {x: 0, y: 0, z: 0}

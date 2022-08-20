@@ -16,11 +16,12 @@ public class PlayerController : PlayerComponent
     private PlayerInput playerInput;
 
     public float walkSpeedMultiplier = 1.0f;
+    public float jumpHeight = 5.0f;
     public float mouseSens = 1.0f;
     public float gravity = -9.81f;
 
     [SyncVar] private PlayerInput.NetworkInputData Inputs;
-    [SyncVar] [SerializeField] private Vector3 moveDirection;
+    [SyncVar] private Vector3 moveDirection;
     [SyncVar] private Vector2 lookDelta;
     [SyncVar] private bool fired;
     [SyncVar(hook = nameof(OnWalkingCallback))] [SerializeField] private Vector2 velocity;
@@ -98,7 +99,7 @@ public class PlayerController : PlayerComponent
 
         moveDirection = transform.right * moveDirection.x + transform.forward * moveDirection.z;
 
-        if (isGrounded && moveDirection.y <= 0f)
+        if (isGrounded && moveDirection.y <= 0f && moveDirection.y > -2f)
             moveDirection.y = -2f;
         moveDirection.y += gravity;
         charController.Move(moveDirection * walkSpeedMultiplier * Time.fixedDeltaTime);

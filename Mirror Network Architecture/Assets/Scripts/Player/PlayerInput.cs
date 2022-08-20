@@ -46,14 +46,15 @@ public class PlayerInput : PlayerComponent
 
         EnableInputAction();
 
-        Fire.performed += FirePressed;
+        Fire.performed += FireAction;
+        Fire.canceled += FireAction;
         Run.performed += RunAction;
         Run.canceled += RunAction;
         Jump.performed += JumpAction;
         Jump.canceled += JumpAction;
     }
 
-    private void FirePressed(InputAction.CallbackContext ctx) => firePressed = true;
+    private void FireAction(InputAction.CallbackContext ctx) => firePressed = (ctx.performed) ? true : false;
     private void RunAction(InputAction.CallbackContext ctx) => runPressed = (ctx.performed) ? true : false;
     private void JumpAction(InputAction.CallbackContext ctx) => jumpPressed = (ctx.performed) ? true : false;
 

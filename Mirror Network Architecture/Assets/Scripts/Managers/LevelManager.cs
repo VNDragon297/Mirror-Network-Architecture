@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour
     {
         OfflineScene = 0,
         OnlineScene = 1,
-        GameplayScene = 2
+        Ascent = 2
     }
 
     public static LevelManager instance;
