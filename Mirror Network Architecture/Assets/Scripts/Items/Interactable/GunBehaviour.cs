@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class GunBehaviour : MonoBehaviour
 {
+    public enum GunType
+    {
+        PRIMARY,
+        SECONDARY
+    }
+
     [SerializeField] private bool isAuto;
     [SerializeField] private bool isReloading;
     [SerializeField] private bool readyToFire;
@@ -12,18 +18,22 @@ public class GunBehaviour : MonoBehaviour
     [SerializeField] private float reloadTime;
     [SerializeField] private float timeBetweenBullets;
     [SerializeField] private float currentDelta;
+    [SerializeField] private GunType gunType;
 
     [SerializeField] private GameObject muzzleFlash;
 
-    private void Awake()
+    private void OnEnable()
     {
-        
+        currentMagSize = maxMagSize;
+        currentDelta = 0;
     }
 
     private void FixedUpdate()
     {
         if (currentDelta < timeBetweenBullets)
             currentDelta += Time.fixedDeltaTime;
+        else
+            readyToFire = true;
     }
 
     public void AttemptingToFire()
@@ -48,7 +58,7 @@ public class GunBehaviour : MonoBehaviour
             if (currentDelta >= timeBetweenBullets)
             {
 
-                // Fire bullet here
+                // Muzzle animation and draw raycast
                 currentMagSize--;
                 currentDelta = 0f;
             }
@@ -58,7 +68,7 @@ public class GunBehaviour : MonoBehaviour
             if (currentDelta >= timeBetweenBullets)
             {
 
-                // Fire bullet here
+                // Muzzle animation and draw raycast
                 currentMagSize--;
                 currentDelta = 0f;
                 readyToFire = false;
@@ -77,5 +87,8 @@ public class GunBehaviour : MonoBehaviour
         isReloading = true;
         yield return new WaitForSeconds(reloadTime);
         currentMagSize = maxMagSize;
+        isReloading = false;
     }
+
+    public void SetParentTransform(Transform parent) => this.SetParentTransform(parent);
 }

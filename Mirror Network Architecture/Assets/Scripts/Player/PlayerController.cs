@@ -7,11 +7,6 @@ using System;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : PlayerComponent
 {
-    [Header("Ground Check")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundDistance;
-    [SerializeField] private LayerMask layerMask;
-
     private CharacterController charController;
     private PlayerInput playerInput;
 
@@ -19,6 +14,7 @@ public class PlayerController : PlayerComponent
     public float jumpHeight = 5.0f;
     public float mouseSens = 1.0f;
     public float gravity = -9.81f;
+    public Transform gunSlot;
 
     [SyncVar] private PlayerInput.NetworkInputData Inputs;
     [SyncVar] private Vector3 moveDirection;
@@ -46,6 +42,9 @@ public class PlayerController : PlayerComponent
     {
         charController = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
+
+        playerInput.OnBuyPressed += BuyWeapon;
+        playerInput.OnDropPressed += DropCurrentWeapon;
     }
 
     private void Update()
@@ -67,6 +66,7 @@ public class PlayerController : PlayerComponent
 
         Look();
         Move();
+        PlayerAction();
     }
 
     public override void OnGameStart()
@@ -74,6 +74,62 @@ public class PlayerController : PlayerComponent
         base.OnGameStart();
 
         // Initiallize things such as audio manager and loggers
+    }
+
+    private void BuyWeapon()
+    {
+        // Enable ShopUI here
+
+        // PLACEHOLDER
+        // Should be done on server only
+        CmdBuyWeapon();
+    }
+
+    [Command]
+    private void CmdBuyWeapon()
+    {
+        var weapon = GameManager.instance.SpawnWeapon(2);
+        EquipWeapon(weapon);
+    }
+
+    [SerializeField] private GameObject currentGun;
+    private void EquipWeapon(GameObject weaponToEquip)
+    {
+        if(currentGun != null)
+        {
+            DropCurrentWeapon();
+        }
+
+        currentGun = weaponToEquip;
+        if(currentGun.TryGetComponent<Collider>(out Collider col))
+        {
+            var rb = currentGun.GetComponent<Rigidbody>();
+            col.enabled = false;
+            rb.useGravity = false;
+            rb.velocity = Vector3.zero;
+        }
+
+        currentGun.transform.SetParent(gunSlot);
+        currentGun.transform.SetPositionAndRotation(gunSlot.position, gunSlot.rotation);
+    }
+    
+    private void DropCurrentWeapon()
+    {
+        CmdDropCurrentWeapon();
+    }
+
+    [Command]
+    private void CmdDropCurrentWeapon()
+    {
+        Debug.Log("Dropping weapon");
+        if (currentGun.TryGetComponent<Collider>(out Collider col))
+        {
+            var rb = currentGun.GetComponent<Rigidbody>();
+            col.enabled = true;
+            rb.useGravity = true;
+            rb.AddExplosionForce(2f, this.transform.position, 2f);
+        }
+        currentGun.transform.parent = null;
     }
 
     private Vector3 MoveAxisRemap(Vector2 controllerInput) => new Vector3(controllerInput.x, 0, controllerInput.y);
@@ -133,5 +189,22 @@ public class PlayerController : PlayerComponent
     {
         transform.Rotate(mouseX * Vector3.up);
         headTransform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
+    }
+
+    private void PlayerAction()
+    {
+        if(Inputs.isFirePressed)
+        {
+            if (currentGun != null && currentGun.TryGetComponent<GunBehaviour>(out GunBehaviour gunBehaviour))
+            {
+                gunBehaviour.AttemptingToFire();
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        playerInput.OnBuyPressed -= BuyWeapon;
+        playerInput.OnDropPressed -= DropCurrentWeapon;
     }
 }
