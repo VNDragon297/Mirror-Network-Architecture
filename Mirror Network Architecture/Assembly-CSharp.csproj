@@ -56,7 +56,9 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\UI\ScoreBoardUI.cs" />
     <Compile Include="Assets\Scripts\UI\PlayerSlotUI.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerScoreUI.cs" />
     <Compile Include="Assets\Scripts\Managers\EventManager.cs" />
     <Compile Include="Assets\Scripts\Levels\Level.cs" />
     <Compile Include="Assets\Scripts\Items\Interactable\GunBehaviour.cs" />
@@ -76,8 +78,7 @@
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEntity.cs" />
     <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
-    <Compile Include="Assets\Scripts\UI\PlayerScoreUI.cs" />
-    <Compile Include="Assets\Scripts\UI\ScoreBoardUI.cs" />
+    <Compile Include="Assets\Scripts\BreakableItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

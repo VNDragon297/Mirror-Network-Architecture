@@ -135,17 +135,21 @@ public class MyNetworkManager : NetworkRoomManager
         // Spawn players
         if(string.Equals(sceneName, "Ascent"))
         {
-            foreach(var player in roomSlots)
+            for(int i = 0; i < roomSlots.Count; i++)
             {
                 Debug.Log("Spawning players");
 
                 // Determine spawn point
-                Vector3 spawnPoint = (startPositions.Count > 0) ? startPositions[0].transform.position : new Vector3(0f, 1.5f, 0f);
+                Vector3 spawnPoint = (startPositions.Count > 0) ? startPositions[i].transform.position : new Vector3(0f, 1.5f, 0f);
 
                 // If Spectators are allow, check here to know what to spawn
                 var obj = Instantiate(spawnPrefabs[1], spawnPoint, Quaternion.identity);
 
-                NetworkServer.Spawn(obj, player.gameObject);
+                NetworkServer.Spawn(obj, roomSlots[i].gameObject);
+            }
+
+            foreach(var player in roomSlots)
+            {
             }
         }
     }

@@ -44,7 +44,7 @@ public class PlayerController : PlayerComponent
         playerInput = GetComponent<PlayerInput>();
 
         playerInput.OnBuyPressed += BuyWeapon;
-        playerInput.OnDropPressed += DropCurrentWeapon;
+        playerInput.OnDropPressed += DropWeapon;
     }
 
     private void Update()
@@ -85,51 +85,49 @@ public class PlayerController : PlayerComponent
         CmdBuyWeapon();
     }
 
+    private void DropWeapon() => CmdDropWeapon();
+
     [Command]
     private void CmdBuyWeapon()
     {
-        var weapon = GameManager.instance.SpawnWeapon(2);
-        EquipWeapon(weapon);
-    }
-
-    [SerializeField] private GameObject currentGun;
-    private void EquipWeapon(GameObject weaponToEquip)
-    {
-        if(currentGun != null)
-        {
-            DropCurrentWeapon();
-        }
-
-        currentGun = weaponToEquip;
-        if(currentGun.TryGetComponent<Collider>(out Collider col))
-        {
-            var rb = currentGun.GetComponent<Rigidbody>();
-            col.enabled = false;
-            rb.useGravity = false;
-            rb.velocity = Vector3.zero;
-        }
-
-        currentGun.transform.SetParent(gunSlot);
-        currentGun.transform.SetPositionAndRotation(gunSlot.position, gunSlot.rotation);
-    }
-    
-    private void DropCurrentWeapon()
-    {
-        CmdDropCurrentWeapon();
+        var obj = Instantiate(MyNetworkManager.instance.spawnPrefabs[2], Vector3.zero, Quaternion.identity);
+        NetworkServer.Spawn(obj);
+        currentGun = obj;
     }
 
     [Command]
-    private void CmdDropCurrentWeapon()
+    private void CmdDropWeapon() => currentGun = null;
+
+    [SyncVar(hook = nameof(OnCurrentGunChanged))][SerializeField] private GameObject currentGun;
+    private void OnCurrentGunChanged(GameObject oldVal, GameObject newVal)
     {
-        Debug.Log("Dropping weapon");
-        if (currentGun.TryGetComponent<Collider>(out Collider col))
+        if(oldVal != null)
         {
-            var rb = currentGun.GetComponent<Rigidbody>();
-            col.enabled = true;
-            rb.useGravity = true;
-            rb.AddExplosionForce(2f, this.transform.position, 2f);
+            if (oldVal.TryGetComponent<Collider>(out Collider oldCol))
+            {
+                Debug.Log("Dropping weapon");
+                var rb = oldVal.GetComponent<Rigidbody>();
+                oldCol.enabled = true;
+                rb.isKinematic = false;
+                rb.AddExplosionForce(2f, this.transform.position, 2f);
+            }
+            oldVal.transform.parent = null;
         }
-        currentGun.transform.parent = null;
+
+        currentGun = newVal;
+        if(newVal != null)
+        {
+            if (currentGun.TryGetComponent<Collider>(out Collider col))
+            {
+                var rb = currentGun.GetComponent<Rigidbody>();
+                col.enabled = false;
+                rb.isKinematic = true;
+                rb.velocity = Vector3.zero;
+            }
+
+            currentGun.transform.SetParent(gunSlot);
+            currentGun.transform.SetPositionAndRotation(gunSlot.position, gunSlot.rotation);
+        }
     }
 
     private Vector3 MoveAxisRemap(Vector2 controllerInput) => new Vector3(controllerInput.x, 0, controllerInput.y);
@@ -191,13 +189,16 @@ public class PlayerController : PlayerComponent
         headTransform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
     }
 
+    public float raycastDistance = 100f;
     private void PlayerAction()
     {
-        if(Inputs.isFirePressed)
+        Transform origin = Camera.main.transform;
+        if (Inputs.isFirePressed)
         {
             if (currentGun != null && currentGun.TryGetComponent<GunBehaviour>(out GunBehaviour gunBehaviour))
             {
-                gunBehaviour.AttemptingToFire();
+                // Transform origin = Camera.main.transform;
+                gunBehaviour.AttemptingToFire(origin.position, origin.forward, raycastDistance);
             }
         }
     }
@@ -205,6 +206,6 @@ public class PlayerController : PlayerComponent
     private void OnDestroy()
     {
         playerInput.OnBuyPressed -= BuyWeapon;
-        playerInput.OnDropPressed -= DropCurrentWeapon;
+        playerInput.OnDropPressed -= DropWeapon;
     }
 }

@@ -36,44 +36,60 @@ public class GunBehaviour : MonoBehaviour
             readyToFire = true;
     }
 
-    public void AttemptingToFire()
+    public void AttemptingToFire(Vector3 startPos, Vector3 direction, float distance)
     {
         if (readyToFire && !isReloading)
-            Firing();
+        {
+            if (Shoot())
+            {
+                if (Physics.Raycast(startPos, direction, out RaycastHit hitInfo, distance))
+                {
+                    Debug.Log($"Raycast Hit! {hitInfo.collider.name}");
+                    var itemScript = hitInfo.collider.GetComponentInParent<BreakableItem>();
+                    if (itemScript != null)
+                        itemScript.TakeDamage(25f);         // TODO: Call on the server
+                }
+            }
+        }
     }
 
     public void ReReadyGunForFire() => readyToFire = true;
 
-    private void Firing()
+    private bool Shoot()
     {
         if (currentMagSize <= 0)
         {
             // Reload
             Reload();
-            return;
-        }
-
-        if (isAuto)
-        {
-            if (currentDelta >= timeBetweenBullets)
-            {
-
-                // Muzzle animation and draw raycast
-                currentMagSize--;
-                currentDelta = 0f;
-            }
         }
         else
         {
-            if (currentDelta >= timeBetweenBullets)
+            if (isAuto)
             {
+                if (currentDelta >= timeBetweenBullets)
+                {
 
-                // Muzzle animation and draw raycast
-                currentMagSize--;
-                currentDelta = 0f;
-                readyToFire = false;
+                    // Muzzle animation and draw raycast
+                    currentMagSize--;
+                    currentDelta = 0f;
+                    return true;
+                }
+            }
+            else
+            {
+                if (currentDelta >= timeBetweenBullets)
+                {
+
+                    // Muzzle animation and draw raycast
+                    currentMagSize--;
+                    currentDelta = 0f;
+                    readyToFire = false;
+                    return true;
+                }
             }
         }
+
+        return false;
     }
 
     public void Reload()
@@ -89,6 +105,4 @@ public class GunBehaviour : MonoBehaviour
         currentMagSize = maxMagSize;
         isReloading = false;
     }
-
-    public void SetParentTransform(Transform parent) => this.SetParentTransform(parent);
 }

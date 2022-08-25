@@ -44,23 +44,4 @@ public class GameManager : NetworkBehaviour
         if (cameraController.ControlCamera(camera) == false)
             cameraController = null;
     }
-
-    public GameObject SpawnWeapon(int index)
-    {
-        if (index >= MyNetworkManager.instance.spawnPrefabs.Count || index < 0)
-            return null;
-
-        var weapon = Instantiate(MyNetworkManager.instance.spawnPrefabs[index], Vector3.zero, Quaternion.identity);
-        if(weapon.TryGetComponent<GunBehaviour>(out GunBehaviour gunBehaviour))
-        {
-            // This is to make sure that this is a weapon
-            NetworkServer.Spawn(weapon);
-            return weapon;
-        }
-        else
-        {
-            Destroy(weapon);
-            return null;
-        }
-    }
 }
