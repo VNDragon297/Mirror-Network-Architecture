@@ -76,11 +76,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  groundCheck: {fileID: 0}
-  groundDistance: 0.4
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8
   walkSpeedMultiplier: 1.35
   jumpHeight: 100
   mouseSens: 4
@@ -88,7 +83,9 @@ MonoBehaviour:
   gunSlot: {fileID: 4633301138874941938}
   velocity: {x: 0, y: 0}
   isGrounded: 0
+  currentGun: {fileID: 0}
   headTransform: {fileID: 3255163992990343401}
+  raycastDistance: 100
 --- !u!114 &-3771658728521106075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,6 +431,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  animator: {fileID: -3286333120292256880}
+  myIndex: 0
+  currentHealth: 0
+  Kills: 0
+  Deaths: 0
+  Assists: 0
 --- !u!1 &8779475896931482149
 GameObject:
   m_ObjectHideFlags: 0

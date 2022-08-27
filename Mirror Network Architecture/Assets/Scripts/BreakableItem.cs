@@ -21,8 +21,13 @@ public class BreakableItem : NetworkBehaviour
         MeshObject.SetActive(true);
     }
 
-    [Server]
     public void TakeDamage(float dmg)
+    {
+        CmdTakeDamage(dmg);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdTakeDamage(float dmg)
     {
         Debug.Log($"Taken {dmg} damage");
         currentHealth -= dmg;
@@ -44,5 +49,7 @@ public class BreakableItem : NetworkBehaviour
         // Play some particle shits here
         MeshObject.SetActive(false);
         Debug.Log($"{gameObject.name} destroyed");
+        NetworkServer.UnSpawn(this.gameObject);
+        Destroy(this.gameObject);
     }
 }

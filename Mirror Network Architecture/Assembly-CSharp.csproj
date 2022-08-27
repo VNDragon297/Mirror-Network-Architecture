@@ -76,9 +76,9 @@
     <Compile Include="Assets\Scripts\Managers\LevelManager.cs" />
     <Compile Include="Assets\Scripts\Networks\ClientInfo.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\BreakableItem.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEntity.cs" />
     <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
-    <Compile Include="Assets\Scripts\BreakableItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

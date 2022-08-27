@@ -62,6 +62,9 @@ public class PlayerController : PlayerComponent
     {
         if (!hasAuthority)
             return;
+        else if (GetComponent<PlayerEntity>().isDead)
+            return;
+
         Inputs = playerInput.Inputs;
 
         Look();
@@ -197,8 +200,7 @@ public class PlayerController : PlayerComponent
         {
             if (currentGun != null && currentGun.TryGetComponent<GunBehaviour>(out GunBehaviour gunBehaviour))
             {
-                // Transform origin = Camera.main.transform;
-                gunBehaviour.AttemptingToFire(origin.position, origin.forward, raycastDistance);
+                gunBehaviour.AttemptingToFire(origin.position, origin.forward, raycastDistance, GetComponent<PlayerEntity>().myIndex);
             }
         }
     }

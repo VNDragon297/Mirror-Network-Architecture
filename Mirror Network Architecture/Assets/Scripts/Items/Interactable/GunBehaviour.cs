@@ -36,7 +36,7 @@ public class GunBehaviour : MonoBehaviour
             readyToFire = true;
     }
 
-    public void AttemptingToFire(Vector3 startPos, Vector3 direction, float distance)
+    public void AttemptingToFire(Vector3 startPos, Vector3 direction, float distance, int index)
     {
         if (readyToFire && !isReloading)
         {
@@ -45,9 +45,19 @@ public class GunBehaviour : MonoBehaviour
                 if (Physics.Raycast(startPos, direction, out RaycastHit hitInfo, distance))
                 {
                     Debug.Log($"Raycast Hit! {hitInfo.collider.name}");
+                    var playerEntityScript = hitInfo.collider.GetComponentInParent<PlayerEntity>();
+                    if(playerEntityScript != null)
+                    {
+                        playerEntityScript.CmdTakeDamage(25, index);
+                        return;
+                    }
+
                     var itemScript = hitInfo.collider.GetComponentInParent<BreakableItem>();
                     if (itemScript != null)
-                        itemScript.TakeDamage(25f);         // TODO: Call on the server
+                    {
+                        itemScript.TakeDamage(25);
+                        return;
+                    }
                 }
             }
         }
